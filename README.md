@@ -4,4 +4,5 @@
 
 ```bash
 python3 execute.py > output.csv
+sed -i '/<redner id="[^:]*:/d' output.csv
 ```
