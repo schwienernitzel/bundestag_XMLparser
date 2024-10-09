@@ -48,7 +48,7 @@ def main(filename):
 
         if re.search('rede id', line) or re.search('<sitzungsende', line):
             gesamte_rede = ' ## '.join(rede)
-            print_text += '\n'+rede_id+'\t'+redner+'\t'+datum+'\t'+gesamte_rede
+            print_text += '\n'+rede_id+'\t'+datum+'\t'+redner+'\t'+gesamte_rede
             redner = '-'
             rede = []
             rede_id = re.sub('.*rede id="([^"]+)".*', r'\1', line)
