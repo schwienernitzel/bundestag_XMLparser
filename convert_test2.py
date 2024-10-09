@@ -55,7 +55,9 @@ def main(filename):
 
         if re.search('<sitzungsende', line):
             break
-        
+
+    print_text = remove_first_line(print_text)
+
     print (print_text)
     pass
 
@@ -66,6 +68,10 @@ def get_content(filename):
             line = line.strip()
             content.append(line)           
     return content
+
+def remove_first_line(text):
+    lines = text.strip().split('\n')
+    return '\n'.join(lines[1:]) if len(lines) > 1 else ''
 
 if __name__ == '__main__':
     if len(argv) == 2:
