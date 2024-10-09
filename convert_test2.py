@@ -10,6 +10,7 @@ def main(filename):
     rede = []
     datum = '-'
     print_text = ''
+    rede_aktiv = False
     redner_aktiv = False
 
     for i, line in enumerate(content):
@@ -18,10 +19,16 @@ def main(filename):
         if re.search('sitzung-datum', line):
             datum = re.sub('.*sitzung-datum="([^"]+)".*', r'\1', line)
 
-        if re.search('<p', line) and not re.search('<vorname>', line):
-            absatz = re.sub("<[^>]*>", '', line)
-            absatz = absatz.strip()
-            rede.append(absatz)
+        # Mehrzeilige Rede-Absätze erfassen
+        if re.search('<p', line)  and not re.search('<vorname>', line) or rede_aktiv:
+            absatz = re.sub("<[^>]*>", '', line).strip()  # Entferne HTML-Tags und bereinige den Text
+
+            if absatz:  # Nur hinzufügen, wenn der Absatz nicht leer ist
+                rede.append(absatz)
+                rede_aktiv = True  # Weiterhin Rede sammeln
+
+            if re.search('</p>', line):  # Wenn das Ende des Absatzes erreicht ist
+                rede_aktiv = False  # Sammeln beenden
 
         # Rednername sammeln, auch mehrzeilig
         if re.search('</redner>', line) or redner_aktiv:
