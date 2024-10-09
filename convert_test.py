@@ -60,7 +60,7 @@ def main(filename):
         if re.search("rede id=", line):
             if rede_id != '-':
                 gesamte_rede = ' ## '.join(rede)
-                print_text += f'\n{rede_id}\t{redner}\t{partei}\t{datum}\t{gesamte_rede}'
+                print_text += f'\n{rede_id}\t{datum}\t{redner}\t{partei}\t{gesamte_rede}'
             rede_id = re.sub('.*rede id="([^"]+)".*', r'\1', line)
             rede = []
 
@@ -71,7 +71,7 @@ def main(filename):
     # Letzte Rede hinzufügen
     if rede_id != '-':
         gesamte_rede = ' ## '.join(rede)
-        print_text += f'\n{rede_id}\t{redner}\t{partei}\t{datum}\t{gesamte_rede}'
+        print_text += f'\n{rede_id}\t{datum}\t{redner}\t{partei}\t{gesamte_rede}'
 
     print(print_text)
 

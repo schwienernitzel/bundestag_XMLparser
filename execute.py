@@ -18,7 +18,7 @@ total = len(files)
 for number, file in files:
     num = file[2:-4]
     print(f"Plenarprotokoll: {num}. Sitzung", end='')
-    print('\nRede ID\tRedner:in\tPartei\tDatum\tRede')
+    print('\nRede ID\tDatum\tRedner:in\tPartei\tRede')
     try:
         result = subprocess.run(['python3', '../convert_test.py', file], check=True, capture_output=True, text=True)
         print(result.stdout)
