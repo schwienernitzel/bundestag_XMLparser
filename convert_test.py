@@ -5,7 +5,6 @@ def main(filename):
     content = get_content(filename)
 
     redner = '-'
-    partei = '-'
     rede_id = '-'
     rede = []
     datum = '-'
