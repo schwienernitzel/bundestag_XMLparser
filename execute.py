@@ -20,7 +20,7 @@ for number, file in files:
     print(f"Plenarprotokoll: {num}. Sitzung", end='')
     print('\nRede ID\tDatum\tRedner:in\tRede')
     try:
-        result = subprocess.run(['python3', '../convert_test.py', file], check=True, capture_output=True, text=True)
+        result = subprocess.run(['python3', '../convert_test2.py', file], check=True, capture_output=True, text=True)
         print(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"Fehler beim Verarbeiten von {file}: {e.stderr}")
