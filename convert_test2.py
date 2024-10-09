@@ -10,6 +10,7 @@ def main(filename):
     rede = []
     datum = '-'
     print_text = ''
+    redner_aktiv = False
 
     for i, line in enumerate(content):
         line = re.sub('[\s]+', ' ', line)
@@ -22,10 +23,21 @@ def main(filename):
             absatz = absatz.strip()
             rede.append(absatz)
 
-        # Redner. Format: </redner>Helmut Kleebank (SPD):</p>
-        if re.search('</redner>', line):
-            redner = re.sub('.*/redner>([^<]+).*', r'\1', line).strip()
-            redner = re.sub(':', '', redner).strip()
+        # Rednername sammeln, auch mehrzeilig
+        if re.search('</redner>', line) or redner_aktiv:
+            if not redner_aktiv:
+                # Nur den Text nach dem Redner-Tag erfassen und HTML-Tags entfernen
+                redner = re.sub('.*/redner>([^<]*).*', r'\1', line).strip()
+                redner_aktiv = True  # Aktivieren des Sammelns mehrzeiliger Namen
+            else:
+                # Fortsetzen des Redners, nur den Text sammeln und HTML-Tags entfernen
+                line = re.sub('<[^>]*>', '', line).strip()  # HTML-Tags wie </p> entfernen
+                redner += ' ' + line
+
+            # Überprüfen, ob der Rednername endet
+            if ':' in line:
+                redner = re.sub(':', '', redner).strip()  # ":" entfernen, um den vollständigen Namen zu haben
+                redner_aktiv = False  # Rednersammeln beenden
 
         if re.search('rede id', line) or re.search('<sitzungsende', line):
             gesamte_rede = ' ## '.join(rede)
