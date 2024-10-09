@@ -17,9 +17,10 @@ total = len(files)
 
 for number, file in files:
     num = file[2:-4]
-    print(f"Plenarprotokoll: {num}. Sitzung")
+    print(f"Plenarprotokoll: {num}. Sitzung", end='')
+    print('\nRede ID\tRedner:in\tPartei\tDatum\tRede')
     try:
-        result = subprocess.run(['python3', '../convert_xml.py', file], check=True, capture_output=True, text=True)
+        result = subprocess.run(['python3', '../convert_test.py', file], check=True, capture_output=True, text=True)
         print(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"Fehler beim Verarbeiten von {file}: {e.stderr}")

@@ -46,6 +46,9 @@ def main(filename):
         if re.search('<fraktion>', line):
             partei = re.sub('.*<fraktion>([^<]+)</fraktion>.*', r'\1', line)
 
+        if re.search('<rolle_lang>', line):
+            partei = re.sub('.*<rolle_lang>([^<]+)</rolle_lang>.*', r'\1', line)
+
         # Rede-Absatz extrahieren
         if re.search('<p', line) and not re.search('<redner', line):
             absatz = re.sub("<[^>]*>", '', line)
