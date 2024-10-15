@@ -56,7 +56,7 @@ def main(filename):
             break
 
     # Entferne die erste leere Zeile und drucke den Text
-    print_text = remove_first_line(print_text)
+    # print_text = remove_first_line(print_text)
     print(print_text)
     pass
 
@@ -68,9 +68,9 @@ def get_content(filename):
             content.append(line)
     return content
 
-def remove_first_line(text):
-    lines = text.strip().split('\n')
-    return '\n'.join(lines[1:]) if len(lines) > 1 else ''
+# def remove_first_line(text):
+#    lines = text.strip().split('\n')
+#    return '\n'.join(lines[1:]) if len(lines) > 1 else ''
 
 if __name__ == '__main__':
     if len(argv) == 2:
