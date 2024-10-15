@@ -10,16 +10,15 @@ def main(filename):
     datum = '-'
     print_text = ''
     in_rede = False
+    rede_aktiv = False
     redner_aktiv = False
 
     for i, line in enumerate(content):
         line = re.sub('[\s]+', ' ', line)
-        
-        # Erfasse das Datum
+
         if re.search('sitzung-datum', line):
             datum = re.sub('.*sitzung-datum="([^"]+)".*', r'\1', line)
 
-        # Erfasse Redner
         if re.search('</redner>', line) or redner_aktiv:
             if not redner_aktiv:
                 redner = re.sub('.*/redner>([^<]*).*', r'\1', line).strip()
@@ -31,22 +30,21 @@ def main(filename):
                 redner = re.sub(':', '', redner).strip()
                 redner_aktiv = False
 
-        # Beginn einer Rede
         if re.search('<rede id', line):
             in_rede = True
             rede_id = re.sub('.*rede id="([^"]+)".*', r'\1', line)
             rede = []
             redner = '-'
-        
-        # Nur wenn wir uns innerhalb einer Rede befinden
+
         if in_rede:
-            # Erfasse Text innerhalb von <p>-Tags
-            if re.search('<p', line):
+            if re.search('<p', line)  and not re.search('<vorname>', line) or rede_aktiv:
                 absatz = re.sub("<[^>]*>", '', line).strip()
                 if absatz:
                     rede.append(absatz)
-        
-        # Ende der Rede
+                    rede_aktiv = True
+                if re.search('</p>', line):
+                    rede_aktiv = False
+
         if re.search('</rede>', line):
             in_rede = False
             gesamte_rede = ' ## '.join(rede)
@@ -55,8 +53,6 @@ def main(filename):
         if re.search('<sitzungsende', line):
             break
 
-    # Entferne die erste leere Zeile und drucke den Text
-    # print_text = remove_first_line(print_text)
     print(print_text)
     pass
 
@@ -67,10 +63,6 @@ def get_content(filename):
             line = line.strip()
             content.append(line)
     return content
-
-# def remove_first_line(text):
-#    lines = text.strip().split('\n')
-#    return '\n'.join(lines[1:]) if len(lines) > 1 else ''
 
 if __name__ == '__main__':
     if len(argv) == 2:
