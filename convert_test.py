@@ -10,6 +10,7 @@ def main(filename):
     datum = '-'
     print_text = ''
     in_rede = False
+    redner_aktiv = False
 
     for i, line in enumerate(content):
         line = re.sub('[\s]+', ' ', line)
@@ -17,7 +18,19 @@ def main(filename):
         # Erfasse das Datum
         if re.search('sitzung-datum', line):
             datum = re.sub('.*sitzung-datum="([^"]+)".*', r'\1', line)
-        
+
+        # Erfasse Redner
+        if re.search('</redner>', line) or redner_aktiv:
+            if not redner_aktiv:
+                redner = re.sub('.*/redner>([^<]*).*', r'\1', line).strip()
+                redner_aktiv = True
+            else:
+                line = re.sub('<[^>]*>', '', line).strip()
+                redner += ' ' + line
+            if ':' in line:
+                redner = re.sub(':', '', redner).strip()
+                redner_aktiv = False
+
         # Beginn einer Rede
         if re.search('<rede id', line):
             in_rede = True
@@ -27,10 +40,6 @@ def main(filename):
         
         # Nur wenn wir uns innerhalb einer Rede befinden
         if in_rede:
-            # Erfasse Rednerinformationen
-            if re.search('<redner', line):
-                redner = re.sub('.*<redner [^>]*>([^<]*).*', r'\1', line).strip()
-            
             # Erfasse Text innerhalb von <p>-Tags
             if re.search('<p', line):
                 absatz = re.sub("<[^>]*>", '', line).strip()
