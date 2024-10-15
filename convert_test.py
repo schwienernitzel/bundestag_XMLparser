@@ -1,0 +1,70 @@
+from sys import argv
+from sys import stderr
+import re
+
+def main(filename):
+    content = get_content(filename)
+    redner = '-'
+    rede_id = '-'
+    rede = []
+    datum = '-'
+    print_text = ''
+    in_rede = False
+
+    for i, line in enumerate(content):
+        line = re.sub('[\s]+', ' ', line)
+        
+        # Erfasse das Datum
+        if re.search('sitzung-datum', line):
+            datum = re.sub('.*sitzung-datum="([^"]+)".*', r'\1', line)
+        
+        # Beginn einer Rede
+        if re.search('<rede id', line):
+            in_rede = True
+            rede_id = re.sub('.*rede id="([^"]+)".*', r'\1', line)
+            rede = []
+            redner = '-'
+        
+        # Nur wenn wir uns innerhalb einer Rede befinden
+        if in_rede:
+            # Erfasse Rednerinformationen
+            if re.search('<redner', line):
+                redner = re.sub('.*<redner [^>]*>([^<]*).*', r'\1', line).strip()
+            
+            # Erfasse Text innerhalb von <p>-Tags
+            if re.search('<p', line):
+                absatz = re.sub("<[^>]*>", '', line).strip()
+                if absatz:
+                    rede.append(absatz)
+        
+        # Ende der Rede
+        if re.search('</rede>', line):
+            in_rede = False
+            gesamte_rede = ' ## '.join(rede)
+            print_text += '\n' + rede_id + '\t' + datum + '\t' + redner + '\t' + gesamte_rede
+
+        if re.search('<sitzungsende', line):
+            break
+
+    # Entferne die erste leere Zeile und drucke den Text
+    print_text = remove_first_line(print_text)
+    print(print_text)
+    pass
+
+def get_content(filename):
+    content = []
+    with open(filename, "r") as file_content:
+        for line in file_content.readlines():
+            line = line.strip()
+            content.append(line)
+    return content
+
+def remove_first_line(text):
+    lines = text.strip().split('\n')
+    return '\n'.join(lines[1:]) if len(lines) > 1 else ''
+
+if __name__ == '__main__':
+    if len(argv) == 2:
+        main(argv[1])
+    else:
+        stderr.write("Error: Wrong number of arguments.\n")
