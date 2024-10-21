@@ -1,0 +1,1 @@
+grep -iE '\bmigration\b|\bmigration[a-zA-Z]*\b' output.csv > output_filtered.csv
