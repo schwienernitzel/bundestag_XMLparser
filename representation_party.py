@@ -22,11 +22,11 @@ for i, fraktion in enumerate(fraktionen):
     if total > 0:
         wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90,
                                           colors=[tag_color_map[label] for label in labels])
-        ax.set_title(f'Anteil für die Fraktion: {fraktion}')
+        ax.set_title(f'Verteilung für die Fraktion: {fraktion}')
         ax.axis('equal')
     else:
         ax.text(0.5, 0.5, 'Keine Daten', ha='center', va='center', fontsize=12)
-        ax.set_title(f'Anteil für die Fraktion: {fraktion}')
+        ax.set_title(f'Verteilung für die Fraktion: {fraktion}')
         ax.axis('off')
 
 handles = [plt.Line2D([0], [0], marker='o', color='w', label=tag,
