@@ -1,1 +1,2 @@
 grep -iE '\bmigration\b|\bmigration[a-zA-Z]*\b' output.csv > output_filtered.csv
+grep -iE "\b(0.5|0.6|0.7|0.8|0.9)" output_annotated.csv > output_annotated_above50.csv
