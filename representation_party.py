@@ -2,10 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-data = pd.read_csv('out/output_annotated.csv', delimiter='\t', header=None)
+data = pd.read_csv('out/output_annotated_2.csv', delimiter='\t', header=None)
 tags = data[3]
 redner_fraktionen = data[9]
-fraktionen = ["AfD", "CDU/CSU", "FDP", "SPD", "BÜNDNIS 90/DIE GRÜNEN", "DIE LINKE"]
+fraktionen = ["afd", "cdu/csu", "fdp", "spd", "bündnis 90/die grünen", "die linke"]
+
+redner_fraktionen_lower = redner_fraktionen.str.lower()
 unique_tags = tags.unique()
 colors = plt.cm.tab10(range(len(unique_tags)))
 tag_color_map = {tag: colors[i] for i, tag in enumerate(unique_tags)}
@@ -13,7 +15,7 @@ fig, axes = plt.subplots(2, 3, figsize=(15, 10))
 axes = axes.flatten()
 
 for i, fraktion in enumerate(fraktionen):
-    fraktion_tags = tags[redner_fraktionen.str.contains(fraktion, na=False)]
+    fraktion_tags = tags[redner_fraktionen_lower.str.contains(fraktion, na=False)]
     tag_counts = Counter(fraktion_tags)
     labels = list(tag_counts.keys())
     sizes = list(tag_counts.values())
@@ -22,11 +24,11 @@ for i, fraktion in enumerate(fraktionen):
     if total > 0:
         wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90,
                                           colors=[tag_color_map[label] for label in labels])
-        ax.set_title(f'Verteilung für die Fraktion: {fraktion}')
+        ax.set_title(f'Verteilung für die Fraktion: {fraktion.upper()}')
         ax.axis('equal')
     else:
         ax.text(0.5, 0.5, 'Keine Daten', ha='center', va='center', fontsize=12)
-        ax.set_title(f'Verteilung für die Fraktion: {fraktion}')
+        ax.set_title(f'Verteilung für die Fraktion: {fraktion.upper()}')
         ax.axis('off')
 
 handles = [plt.Line2D([0], [0], marker='o', color='w', label=tag,
